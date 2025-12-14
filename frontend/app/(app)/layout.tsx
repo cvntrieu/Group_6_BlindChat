@@ -15,7 +15,7 @@ export default async function Layout({ children }: LayoutProps) {
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href="https://livekit.io"
+          href=""
           className="scale-100 transition-transform duration-300 hover:scale-110"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -27,7 +27,7 @@ export default async function Layout({ children }: LayoutProps) {
             className="hidden size-6 dark:block"
           />
         </a>
-        <span className="text-foreground font-mono text-xs font-bold tracking-wider uppercase">
+        {/* <span className="text-foreground font-mono text-xs font-bold tracking-wider uppercase">
           Built with{' '}
           <a
             target="_blank"
@@ -37,7 +37,7 @@ export default async function Layout({ children }: LayoutProps) {
           >
             LiveKit Agents
           </a>
-        </span>
+        </span> */}
       </header>
 
       {children}
