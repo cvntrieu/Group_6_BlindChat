@@ -231,10 +231,15 @@ async def entrypoint(ctx: agents.JobContext):
 
     def on_participant_disconnected(participant: rtc.RemoteParticipant):
         logger.info(f"Participant disconnected: {participant.identity}")
-        assistant.cache.flush()  
+        if (assistant.cache):
+            assistant.cache.flush()  
 
     ctx.add_participant_entrypoint(entrypoint_fnc=on_participant_connected)
     ctx.room.on("participant_disconnected", on_participant_disconnected)
+    
+    if (username is None) or (username.strip() == ""):
+        logger.error("AGENT_LOGIN_USERNAME is not set in environment variables.")
+        return
     
     if not ensure_user_exists(username):
         logger.error(
@@ -243,14 +248,20 @@ async def entrypoint(ctx: agents.JobContext):
 
     assistant = Assistant()
 
+    chatgpt_api_key = os.environ.get("OPENAI_API_KEY")
+    if not chatgpt_api_key:
+        logger.error("OPENAI_API_KEY is not set in environment variables.")
+        return
+    chatgpt_model = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+
     session = AgentSession(
         stt=azure.STT(
             speech_key=os.environ.get("AZURE_SPEECH_KEY"),
             speech_region=os.environ.get("AZURE_SPEECH_REGION"),
         ),
         llm=openai.LLM(
-            api_key=os.environ.get("OPENAI_API_KEY"),
-            model=os.environ.get("OPENAI_MODEL"),
+            api_key=chatgpt_api_key,
+            model=chatgpt_model,
         ),
         tts=azure.TTS(
             speech_key=os.environ.get("AZURE_SPEECH_KEY"),
@@ -262,11 +273,13 @@ async def entrypoint(ctx: agents.JobContext):
     @session.on("conversation_item_added")
     def on_conversation_item_added(event: ConversationItemAddedEvent):
         async def async_handler():
+            if assistant.cache is None:
+                logger.warning("Conversation cache is not initialized yet; skipping persistence.")
+                return
+
             role = event.item.role
             text_contents = event.item.text_content
-            print(
-                f"Conversation item added from {role}: {text_contents}. interrupted: {event.item.interrupted}"
-            )
+            print(f"Conversation item added from {role}: {text_contents}. interrupted: {event.item.interrupted}")
 
             new_ctx = assistant.chat_ctx.copy()
 
