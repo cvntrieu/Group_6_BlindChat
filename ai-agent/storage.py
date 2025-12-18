@@ -28,13 +28,40 @@ class ConversationCache:
         self.session = requests.Session()
 
     # --- HTTP helpers ---
+    def _normalize_url(self, path: str) -> str:
+        """Normalize URL by removing trailing slash from base and ensuring single slash before path."""
+        base_url = BACKEND_BASE.rstrip('/')
+        path = path.lstrip('/')
+        return f"{base_url}/{path}"
+    
     def _login_if_needed(self):
         # naive caching of token (no expiry check from backend); re-login if token missing
         if self._token and time.time() < self._token_expiry:
             return
-        url = f"{BACKEND_BASE}/api/account/login"
+        
+        login_url = self._normalize_url("api/account/login")
         payload = {"username": self.username}
-        resp = self.session.post(url, json=payload, timeout=10)
+        
+        # Try login first
+        resp = self.session.post(login_url, json=payload, timeout=10)
+        
+        # If 401 Unauthorized, user doesn't exist - register first
+        if resp.status_code == 401:
+            print(f"[INFO] User '{self.username}' not found. Attempting registration...")
+            register_url = self._normalize_url("api/account/register")
+            register_resp = self.session.post(register_url, json=payload, timeout=10)
+            
+            if register_resp.status_code >= 200 and register_resp.status_code < 300:
+                print(f"[SUCCESS] User '{self.username}' registered successfully.")
+                # After registration, retry login
+                resp = self.session.post(login_url, json=payload, timeout=10)
+            else:
+                raise RuntimeError(
+                    f"Registration failed for user '{self.username}'. "
+                    f"Status: {register_resp.status_code}, Response: {register_resp.text}"
+                )
+        
+        # Check login response
         resp.raise_for_status()
         data = resp.json()
         # backend returns { Message, User: { Username, Token } } per controller
@@ -59,7 +86,7 @@ class ConversationCache:
         Returns list of message DTOs (MessageDto) or [].
         """
         limit = 2*self.pairs_to_flush
-        url = f"{BACKEND_BASE}/api/conversation-history?limit={limit}"
+        url = self._normalize_url(f"api/conversation-history?limit={limit}")
         resp = self.session.get(url, headers=self._auth_headers(), timeout=10)
         resp.raise_for_status()
         data = resp.json()
@@ -74,7 +101,7 @@ class ConversationCache:
         """
         if not messages:
             return []
-        url = f"{BACKEND_BASE}/api/messages"
+        url = self._normalize_url("api/messages")
         resp = self.session.post(url, json=messages, headers=self._auth_headers(), timeout=10)
         resp.raise_for_status()
         return resp.json()

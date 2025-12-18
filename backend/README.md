@@ -76,13 +76,21 @@ Notes:
 
 ## 5) Install EF Core tools (if not installed)
 
-Recommended to install the global tool for convenience:
+**Important**: Install the EF Core tools version that matches your project's .NET version (8.0.x for .NET 8.0 projects):
 
 ```powershell
-dotnet tool install --global dotnet-ef
-# If already installed, update:
-dotnet tool update --global dotnet-ef
+# For .NET 8.0 projects (recommended):
+dotnet tool install --global dotnet-ef --version 8.0.16
+
+# If already installed with wrong version, uninstall first:
+dotnet tool uninstall --global dotnet-ef
+dotnet tool install --global dotnet-ef --version 8.0.16
+
+# Verify installation:
+dotnet ef --version
 ```
+
+**Note**: If you have multiple .NET SDK versions installed, make sure the EF Core tools version matches your project's target framework. Using EF Core 10.x tools with a .NET 8.0 project will cause `System.Runtime` version mismatch errors.
 
 You can also run `dotnet ef` without a global tool if the project includes the CLI tool reference.
 
