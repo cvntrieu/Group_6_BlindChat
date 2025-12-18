@@ -1,0 +1,419 @@
+% =========================================
+% CHƯƠNG 3: CƠ SỞ LÝ THUYẾT VÀ CÔNG NGHỆ
+% =========================================
+\chapter{CƠ SỞ LÝ THUYẾT VÀ CÔNG NGHỆ}
+
+Chương này trình bày các cơ sở lý thuyết về tương tác người-máy (HCI), accessibility, và các công nghệ được sử dụng để xây dựng ứng dụng BlindChat.
+
+\section{Cơ sở lý thuyết về Tương tác Người-Máy}
+
+\subsection{Khái niệm HCI}
+
+Tương tác Người-Máy (Human-Computer Interaction - HCI) là lĩnh vực nghiên cứu về thiết kế, đánh giá và triển khai các hệ thống máy tính tương tác để con người sử dụng, cùng với việc nghiên cứu các hiện tượng xung quanh chúng.
+
+HCI tập trung vào ba yếu tố chính:
+\begin{itemize}
+    \item \textbf{Con người (Human):} Người dùng với các đặc điểm nhận thức, vật lý và xã hội
+    \item \textbf{Máy tính (Computer):} Các thiết bị và hệ thống công nghệ
+    \item \textbf{Tương tác (Interaction):} Cách thức con người và máy tính giao tiếp với nhau
+\end{itemize}
+
+\subsection{Mô hình tương tác}
+
+Trong HCI, có nhiều mô hình tương tác khác nhau:
+
+\begin{enumerate}
+    \item \textbf{Command Line Interface (CLI):} Tương tác thông qua dòng lệnh văn bản
+    \item \textbf{Graphical User Interface (GUI):} Tương tác thông qua giao diện đồ họa với chuột và bàn phím
+    \item \textbf{Voice User Interface (VUI):} Tương tác thông qua giọng nói
+    \item \textbf{Natural Language Interface (NLI):} Tương tác bằng ngôn ngữ tự nhiên
+    \item \textbf{Multimodal Interface:} Kết hợp nhiều phương thức tương tác
+\end{enumerate}
+
+BlindChat sử dụng \textbf{Voice User Interface (VUI)} kết hợp với \textbf{Natural Language Interface} để cho phép người dùng tương tác bằng giọng nói tự nhiên.
+
+\subsection{Nguyên tắc thiết kế giao diện}
+
+\subsubsection{10 Heuristics của Nielsen}
+
+Jakob Nielsen đề xuất 10 nguyên tắc heuristic cho thiết kế giao diện:
+
+\begin{enumerate}
+    \item \textbf{Visibility of system status:} Hệ thống luôn thông báo trạng thái cho người dùng
+    \item \textbf{Match between system and real world:} Sử dụng ngôn ngữ quen thuộc với người dùng
+    \item \textbf{User control and freedom:} Cho phép người dùng hủy bỏ và quay lại
+    \item \textbf{Consistency and standards:} Nhất quán trong thiết kế
+    \item \textbf{Error prevention:} Ngăn ngừa lỗi xảy ra
+    \item \textbf{Recognition rather than recall:} Giảm tải cho trí nhớ người dùng
+    \item \textbf{Flexibility and efficiency of use:} Linh hoạt cho cả người mới và chuyên gia
+    \item \textbf{Aesthetic and minimalist design:} Thiết kế tối giản
+    \item \textbf{Help users recognize and recover from errors:} Hỗ trợ khắc phục lỗi
+    \item \textbf{Help and documentation:} Cung cấp tài liệu hướng dẫn
+\end{enumerate}
+
+\subsubsection{Áp dụng cho Voice Interface}
+
+Trong BlindChat, các nguyên tắc này được áp dụng như sau:
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|p{4cm}|p{10cm}|}
+        \hline
+        \textbf{Nguyên tắc} & \textbf{Áp dụng trong BlindChat} \\
+        \hline
+        System status & AI phản hồi bằng giọng nói xác nhận đã nhận lệnh \\
+        \hline
+        Real world match & Sử dụng ngôn ngữ tự nhiên, không cần lệnh đặc biệt \\
+        \hline
+        User control & Có thể ngắt AI bất cứ lúc nào bằng cách nói \\
+        \hline
+        Consistency & Cùng một loại yêu cầu luôn có phản hồi tương tự \\
+        \hline
+        Error prevention & AI xác nhận lại trước khi thực hiện hành động quan trọng \\
+        \hline
+        Recognition & AI gợi ý các hành động có thể thực hiện \\
+        \hline
+        Flexibility & Chấp nhận nhiều cách diễn đạt khác nhau \\
+        \hline
+        Minimalist & Phản hồi ngắn gọn, đi thẳng vào vấn đề \\
+        \hline
+        Error recovery & Hướng dẫn cách sửa khi hiểu sai ý người dùng \\
+        \hline
+        Help & Có thể hỏi ``Bạn có thể làm gì?'' để nhận hướng dẫn \\
+        \hline
+    \end{tabular}
+    \caption{Áp dụng Nielsen's Heuristics trong BlindChat}
+\end{table}
+
+\section{Accessibility và Universal Design}
+
+\subsection{Khái niệm Accessibility}
+
+Accessibility (Khả năng tiếp cận) trong công nghệ đề cập đến việc thiết kế sản phẩm, thiết bị, dịch vụ hoặc môi trường để mọi người, bao gồm cả người khuyết tật, có thể sử dụng được.
+
+\subsection{Web Content Accessibility Guidelines (WCAG)}
+
+WCAG là bộ tiêu chuẩn quốc tế về accessibility cho nội dung web, được phát triển bởi W3C (World Wide Web Consortium).
+
+\subsubsection{Bốn nguyên tắc POUR}
+
+\begin{enumerate}
+    \item \textbf{Perceivable (Có thể nhận thức):}
+    \begin{itemize}
+        \item Cung cấp text alternatives cho nội dung non-text
+        \item Cung cấp alternatives cho time-based media
+        \item Nội dung có thể được trình bày theo nhiều cách
+        \item Phân biệt foreground và background rõ ràng
+    \end{itemize}
+    
+    \item \textbf{Operable (Có thể vận hành):}
+    \begin{itemize}
+        \item Tất cả chức năng có thể truy cập từ keyboard
+        \item Cho người dùng đủ thời gian để đọc và sử dụng nội dung
+        \item Không thiết kế nội dung gây co giật
+        \item Giúp người dùng navigate và tìm nội dung
+    \end{itemize}
+    
+    \item \textbf{Understandable (Có thể hiểu):}
+    \begin{itemize}
+        \item Text content có thể đọc và hiểu được
+        \item Nội dung xuất hiện và hoạt động theo cách có thể dự đoán
+        \item Giúp người dùng tránh và sửa lỗi
+    \end{itemize}
+    
+    \item \textbf{Robust (Bền vững):}
+    \begin{itemize}
+        \item Tương thích tối đa với các user agents hiện tại và tương lai
+        \item Tương thích với assistive technologies
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Các mức độ tuân thủ WCAG}
+
+\begin{itemize}
+    \item \textbf{Level A:} Mức tối thiểu, bắt buộc
+    \item \textbf{Level AA:} Mức khuyến nghị, được yêu cầu bởi nhiều luật pháp
+    \item \textbf{Level AAA:} Mức cao nhất, tối ưu
+\end{itemize}
+
+BlindChat hướng tới tuân thủ \textbf{WCAG 2.1 Level AA}.
+
+\subsection{ARIA (Accessible Rich Internet Applications)}
+
+ARIA là một bộ thuộc tính HTML giúp cải thiện accessibility cho nội dung web động và các widget phức tạp.
+
+Các thuộc tính ARIA quan trọng:
+\begin{itemize}
+    \item \texttt{aria-label}: Mô tả ngắn gọn cho element
+    \item \texttt{aria-describedby}: Liên kết đến element chứa mô tả chi tiết
+    \item \texttt{aria-live}: Thông báo cập nhật động cho screen reader
+    \item \texttt{role}: Định nghĩa vai trò của element
+\end{itemize}
+
+\section{Công nghệ xử lý giọng nói}
+
+\subsection{Speech-to-Text (STT)}
+
+Speech-to-Text là công nghệ chuyển đổi giọng nói thành văn bản. Các phương pháp chính:
+
+\begin{enumerate}
+    \item \textbf{Traditional ASR:} Sử dụng Hidden Markov Models (HMM) và acoustic models
+    \item \textbf{Deep Learning ASR:} Sử dụng mạng neural như RNN, LSTM, Transformer
+    \item \textbf{End-to-End ASR:} Mô hình học trực tiếp từ audio đến text
+\end{enumerate}
+
+BlindChat sử dụng \textbf{Azure Speech Services} với các ưu điểm:
+\begin{itemize}
+    \item Độ chính xác cao với nhiều ngôn ngữ
+    \item Real-time streaming transcription
+    \item Noise cancellation tích hợp
+    \item Low latency (< 500ms)
+\end{itemize}
+
+\subsection{Text-to-Speech (TTS)}
+
+Text-to-Speech là công nghệ tổng hợp giọng nói từ văn bản. Các phương pháp:
+
+\begin{enumerate}
+    \item \textbf{Concatenative TTS:} Ghép nối các đơn vị âm thanh được ghi âm sẵn
+    \item \textbf{Parametric TTS:} Tạo giọng nói từ các tham số acoustic
+    \item \textbf{Neural TTS:} Sử dụng deep learning (WaveNet, Tacotron, VITS)
+\end{enumerate}
+
+Azure TTS cung cấp:
+\begin{itemize}
+    \item Neural voices với chất lượng tự nhiên
+    \item Hỗ trợ SSML để kiểm soát prosody
+    \item Multiple voice styles (cheerful, sad, angry, etc.)
+    \item Real-time streaming synthesis
+\end{itemize}
+
+\subsection{Voice Activity Detection (VAD)}
+
+VAD là công nghệ phát hiện khi nào có giọng nói trong audio stream. BlindChat sử dụng \textbf{Silero VAD}:
+
+\begin{itemize}
+    \item Lightweight model (< 1MB)
+    \item High accuracy (> 99\%)
+    \item Low latency detection
+    \item Configurable silence duration threshold
+\end{itemize}
+
+\section{Large Language Models (LLM)}
+
+\subsection{Kiến trúc Transformer}
+
+Transformer là kiến trúc neural network được giới thiệu trong paper ``Attention is All You Need'' (2017). Đặc điểm chính:
+
+\begin{itemize}
+    \item \textbf{Self-Attention Mechanism:} Cho phép model xem xét toàn bộ input sequence
+    \item \textbf{Positional Encoding:} Mã hóa vị trí của tokens
+    \item \textbf{Multi-Head Attention:} Nhiều attention heads học các patterns khác nhau
+    \item \textbf{Feed-Forward Networks:} Xử lý output của attention layers
+\end{itemize}
+
+\subsection{GPT Models}
+
+GPT (Generative Pre-trained Transformer) là họ models của OpenAI:
+
+\begin{itemize}
+    \item \textbf{GPT-3.5:} 175 billion parameters, training data đến 2021
+    \item \textbf{GPT-4:} Multimodal, cải thiện reasoning và instruction following
+    \item \textbf{GPT-4o-mini:} Phiên bản nhỏ gọn, tối ưu cho latency và cost
+\end{itemize}
+
+BlindChat sử dụng \textbf{GPT-4o-mini} vì:
+\begin{itemize}
+    \item Cân bằng giữa chất lượng và tốc độ phản hồi
+    \item Chi phí hợp lý cho ứng dụng real-time
+    \item Hỗ trợ function calling/tool use
+    \item Multimodal: xử lý cả text và image
+\end{itemize}
+
+\subsection{Function Calling / Tool Use}
+
+Function Calling cho phép LLM gọi các functions được định nghĩa sẵn:
+
+\begin{verbatim}
+@function_tool
+async def process_file_request(ctx: RunContext, 
+                                user_input: str) -> str:
+    """
+    Finds and processes a PDF file based on 
+    a user's spoken request.
+    """
+    # Implementation
+\end{verbatim}
+
+Lợi ích:
+\begin{itemize}
+    \item LLM có thể thực hiện các hành động cụ thể
+    \item Structured output thay vì free-form text
+    \item Tích hợp với external APIs và services
+\end{itemize}
+
+\section{Computer Vision}
+
+\subsection{Vision Language Models}
+
+Vision Language Models (VLM) là các models có khả năng hiểu cả hình ảnh và ngôn ngữ. Ứng dụng trong BlindChat:
+
+\begin{itemize}
+    \item Mô tả hình ảnh từ camera
+    \item Trả lời câu hỏi về nội dung hình ảnh
+    \item Đọc text trong hình ảnh (OCR)
+\end{itemize}
+
+BlindChat sử dụng \textbf{GPT-4o Vision API}:
+\begin{verbatim}
+result = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{
+        "role": "user",
+        "content": [
+            {"type": "text", "text": user_input},
+            {
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:image/jpeg;base64,{base64_image}"
+                }
+            }
+        ]
+    }],
+    max_tokens=100
+)
+\end{verbatim}
+
+\section{Real-time Communication}
+
+\subsection{WebRTC}
+
+WebRTC (Web Real-Time Communication) là công nghệ cho phép truyền tải audio, video và data trực tiếp giữa các browsers mà không cần plugin.
+
+Các thành phần chính:
+\begin{itemize}
+    \item \textbf{MediaStream:} Capture audio/video từ microphone và camera
+    \item \textbf{RTCPeerConnection:} Thiết lập và quản lý peer-to-peer connection
+    \item \textbf{RTCDataChannel:} Truyền tải arbitrary data
+\end{itemize}
+
+\subsection{LiveKit}
+
+LiveKit là một open-source platform cho real-time communication, được xây dựng trên WebRTC.
+
+\subsubsection{LiveKit Server}
+
+\begin{itemize}
+    \item Selective Forwarding Unit (SFU) architecture
+    \item Scalable room management
+    \item Token-based authentication
+    \item Support simulcast và adaptive bitrate
+\end{itemize}
+
+\subsubsection{LiveKit Agents SDK}
+
+LiveKit Agents SDK cho phép xây dựng AI agents tương tác real-time:
+
+\begin{itemize}
+    \item \textbf{Voice Pipeline:} STT $\rightarrow$ LLM $\rightarrow$ TTS integration
+    \item \textbf{Function Tools:} Define custom tools cho agent
+    \item \textbf{Room Events:} Handle participant join/leave
+    \item \textbf{Track Management:} Manage audio/video tracks
+\end{itemize}
+
+\section{Kiến trúc Backend}
+
+\subsection{ASP.NET Core}
+
+ASP.NET Core là framework cross-platform cho xây dựng web applications và APIs:
+
+\begin{itemize}
+    \item High performance
+    \item Dependency injection built-in
+    \item Middleware pipeline
+    \item Support RESTful APIs
+\end{itemize}
+
+\subsection{Entity Framework Core}
+
+EF Core là Object-Relational Mapper (ORM) cho .NET:
+
+\begin{itemize}
+    \item Code-first approach
+    \item LINQ queries
+    \item Migrations management
+    \item Multiple database providers
+\end{itemize}
+
+\subsection{JWT Authentication}
+
+JSON Web Token (JWT) được sử dụng cho authentication:
+
+\begin{verbatim}
+{
+  "header": {
+    "alg": "HS256",
+    "typ": "JWT"
+  },
+  "payload": {
+    "sub": "user_id",
+    "name": "username",
+    "exp": 1234567890
+  },
+  "signature": "..."
+}
+\end{verbatim}
+
+\section{Frontend Technologies}
+
+\subsection{Next.js}
+
+Next.js là React framework với các tính năng:
+
+\begin{itemize}
+    \item Server-side rendering (SSR)
+    \item Static site generation (SSG)
+    \item API routes
+    \item File-based routing
+    \item Automatic code splitting
+\end{itemize}
+
+\subsection{React}
+
+React là JavaScript library cho building UI:
+
+\begin{itemize}
+    \item Component-based architecture
+    \item Virtual DOM for efficient updates
+    \item Hooks for state management
+    \item Large ecosystem
+\end{itemize}
+
+\subsection{TailwindCSS}
+
+TailwindCSS là utility-first CSS framework:
+
+\begin{itemize}
+    \item Rapid prototyping
+    \item Consistent design system
+    \item Responsive design utilities
+    \item Dark mode support
+\end{itemize}
+
+\section{Kết luận chương}
+
+Chương này đã trình bày:
+
+\begin{itemize}
+    \item Cơ sở lý thuyết về HCI và các nguyên tắc thiết kế giao diện
+    \item Tiêu chuẩn Accessibility WCAG và ARIA
+    \item Các công nghệ xử lý giọng nói: STT, TTS, VAD
+    \item Large Language Models và function calling
+    \item Computer Vision cho image understanding
+    \item Real-time communication với WebRTC và LiveKit
+    \item Backend và Frontend technologies
+\end{itemize}
+
+Các công nghệ này được kết hợp để xây dựng một hệ thống voice-first application hoàn chỉnh, được trình bày chi tiết trong chương tiếp theo.
+

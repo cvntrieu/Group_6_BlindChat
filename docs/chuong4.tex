@@ -1,0 +1,466 @@
+% =========================================
+% CHƯƠNG 4: THIẾT KẾ HỆ THỐNG
+% =========================================
+\chapter{THIẾT KẾ HỆ THỐNG}
+
+Chương này trình bày chi tiết kiến trúc hệ thống, thiết kế cơ sở dữ liệu, thiết kế API và thiết kế giao diện người dùng của ứng dụng BlindChat.
+
+\section{Kiến trúc tổng thể}
+
+\subsection{Tổng quan kiến trúc}
+
+Hệ thống BlindChat được thiết kế theo kiến trúc microservices với 3 thành phần chính:
+
+\begin{figure}[H]
+    \centering
+    \begin{verbatim}
+    +-------------------------------------------------------------+
+    |                         Frontend                            |
+    |              (Next.js 15 + React 19 + LiveKit)              |
+    |         Voice Interface, Video Streaming, Chat UI           |
+    +--------------------------+----------------------------------+
+                               |
+                   +-----------+-----------+
+                   |                       |
+                   v                       v
+    +----------------------+   +--------------------------------+
+    |      AI Agent        |   |         Backend API            |
+    |  (Python + LiveKit)  |   |   (ASP.NET Core 9 + SQL)       |
+    |                      |   |                                |
+    | * Voice Assistant    |<--|  * User Authentication         |
+    | * OpenAI GPT-4o-mini |   |  * Conversation History        |
+    | * Azure STT/TTS      |   |  * Message Storage             |
+    | * Vision Processing  |   |                                |
+    +----------------------+   +--------------------------------+
+    \end{verbatim}
+    \caption{Kiến trúc tổng thể hệ thống BlindChat}
+\end{figure}
+
+\subsection{Luồng dữ liệu}
+
+\subsubsection{Luồng Voice Interaction}
+
+\begin{enumerate}
+    \item User nói vào microphone $\rightarrow$ Frontend capture audio
+    \item Audio được stream qua LiveKit Room đến AI Agent
+    \item AI Agent sử dụng Azure STT để chuyển speech thành text
+    \item Text được gửi đến OpenAI GPT-4o-mini để xử lý
+    \item GPT-4o-mini quyết định gọi tool hoặc trả lời trực tiếp
+    \item Response text được gửi qua Azure TTS để tạo audio
+    \item Audio response được stream về Frontend qua LiveKit
+    \item User nghe phản hồi
+\end{enumerate}
+
+\subsubsection{Luồng lưu trữ Conversation}
+
+\begin{enumerate}
+    \item Mỗi tin nhắn (user/agent) được lưu vào ConversationCache
+    \item Khi đủ 5 cặp tin nhắn, cache tự động flush lên Backend
+    \item Backend lưu messages vào SQL Server
+    \item Khi user reconnect, Agent lấy lịch sử từ Backend để load context
+\end{enumerate}
+
+\section{Thiết kế AI Agent}
+
+\subsection{Class Diagram}
+
+\begin{figure}[H]
+    \centering
+    \begin{verbatim}
+    +-----------------------------------------------------+
+    |                    Assistant                        |
+    |                   (extends Agent)                   |
+    +-----------------------------------------------------+
+    | - context_pairs: List[Dict]                         |
+    | - cache: ConversationCache                          |
+    +-----------------------------------------------------+
+    | + update_context(username: str)                     |
+    | + get_current_date_and_time() -> str                |
+    | + process_file_request(user_input: str) -> str      |
+    | + describe_camera_view(user_input: str) -> str      |
+    | + control_ui_device(target, status) -> str          |
+    +-----------------------------------------------------+
+                              |
+                              | uses
+                              v
+    +-----------------------------------------------------+
+    |                ConversationCache                    |
+    +-----------------------------------------------------+
+    | - username: str                                     |
+    | - pairs_to_flush: int                               |
+    | - _pending_messages: List[Dict]                     |
+    | - _token: Optional[str]                             |
+    +-----------------------------------------------------+
+    | + add_user_message(content: str)                    |
+    | + add_agent_message(content: str)                   |
+    | + flush() -> List[Dict]                             |
+    | + get_last_n_pairs(n: int) -> List[Dict]            |
+    | + get_history_messages() -> List[Dict]              |
+    +-----------------------------------------------------+
+    \end{verbatim}
+    \caption{Class Diagram của AI Agent}
+\end{figure}
+
+\subsection{Function Tools}
+
+AI Agent được trang bị 4 function tools:
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \footnotesize
+    \begin{tabular}{|>{\raggedright\arraybackslash}p{3.8cm}|>{\raggedright\arraybackslash}p{4.2cm}|>{\raggedright\arraybackslash}p{5.5cm}|}
+        \hline
+        \textbf{Tool Name} & \textbf{Trigger Phrases} & \textbf{Chức năng} \\
+        \hline
+        \texttt{get\_current\_} \texttt{date\_and\_time} & ``What time is it?'', ``What's the date?'' & Trả về ngày giờ hiện tại \\
+        \hline
+        \texttt{process\_file\_} \texttt{request} & ``Read my PDF'', ``Summarize the report'' & Đọc và tóm tắt file PDF từ Downloads \\
+        \hline
+        \texttt{describe\_} \texttt{camera\_view} & ``What do you see?'', ``Describe this'' & Mô tả hình ảnh từ camera \\
+        \hline
+        \texttt{control\_ui\_} \texttt{device} & ``Turn on camera'', ``Mute microphone'' & Điều khiển UI (camera, mic, chat) \\
+        \hline
+    \end{tabular}
+    \caption{Function Tools của AI Agent}
+\end{table}
+
+\subsection{Request Routing}
+
+Hệ thống sử dụng LLM để route user request:
+
+\begin{verbatim}
+RequestType:
+  - request_type: "read raw text" | "read file and summary" | "unsupported"
+  - confidence_score: float (0-1)
+  - description: str
+  - file_name: Optional[str]
+  - nth_file: Optional[int]
+\end{verbatim}
+
+Luồng routing:
+\begin{enumerate}
+    \item User input + conversation context $\rightarrow$ Router LLM
+    \item Router phân loại request type với confidence score
+    \item Nếu confidence $\geq$ 0.7: thực hiện action tương ứng
+    \item Nếu confidence $<$ 0.7: trả về ``unsupported''
+\end{enumerate}
+
+\section{Thiết kế Backend API}
+
+\subsection{Database Schema}
+
+\begin{figure}[H]
+    \centering
+    \begin{verbatim}
+    +------------------+
+    |      User        |
+    +------------------+
+    | Id: string (PK)  |
+    | UserName: string |
+    | (IdentityUser)   |
+    +--------+---------+
+             | 1
+             |
+             | 1
+    +--------v-----------------+
+    |   ConversationHistory    |
+    +--------------------------+
+    | Id: int (PK)             |
+    | UserId: string (FK)      |
+    | CreatedAt: DateTime      |
+    +--------+-----------------+
+             | 1
+             |
+             | *
+    +--------v---------+
+    |     Message      |
+    +------------------+
+    | Id: int (PK)     |
+    | ConversationId   |
+    | SenderType: int  |
+    | Content: string  |
+    | CreatedAt        |
+    +------------------+
+    
+    SenderType: 0 = User, 1 = Bot
+    \end{verbatim}
+    \caption{Database Schema}
+\end{figure}
+
+\subsection{API Endpoints}
+
+\subsubsection{Account Controller}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|l|l|p{5cm}|p{4cm}|}
+        \hline
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Request Body} & \textbf{Response} \\
+        \hline
+        POST & /api/account/register & \texttt{\{username: string\}} & User + JWT Token \\
+        \hline
+        POST & /api/account/login & \texttt{\{username: string\}} & User + JWT Token \\
+        \hline
+    \end{tabular}
+    \caption{Account API Endpoints}
+\end{table}
+
+\subsubsection{Message Controller}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|l|l|p{5cm}|p{4cm}|}
+        \hline
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Request Body} & \textbf{Response} \\
+        \hline
+        POST & /api/messages & List of CreateMessageDto & List of MessageDto \\
+        \hline
+    \end{tabular}
+    \caption{Message API Endpoint}
+\end{table}
+
+\textbf{CreateMessageDto:}
+\begin{verbatim}
+{
+    "senderType": 0 | 1,
+    "content": "string",
+    "createdAt": "2025-01-01T00:00:00Z"
+}
+\end{verbatim}
+
+\subsubsection{Conversation History Controller}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|l|l|p{5cm}|p{4cm}|}
+        \hline
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Query Params} & \textbf{Response} \\
+        \hline
+        GET & /api/conversation-history & \texttt{limit: int} & ConversationHistoryDto \\
+        \hline
+    \end{tabular}
+    \caption{Conversation History API Endpoint}
+\end{table}
+
+\subsection{Authentication Flow}
+
+\begin{enumerate}
+    \item AI Agent gọi POST /api/account/login với username
+    \item Backend trả về JWT token
+    \item Agent lưu token và sử dụng trong header: \texttt{Authorization: Bearer <token>}
+    \item Token có thời hạn 1 giờ, agent tự động refresh khi hết hạn
+\end{enumerate}
+
+\section{Thiết kế Frontend}
+
+\subsection{Component Architecture}
+
+\begin{verbatim}
+App
+|-- SessionProvider (Context: LiveKit Room, AppConfig)
+|   +-- ViewController
+|       |-- WelcomeView (Before connect)
+|       |   +-- StartButton
+|       +-- SessionView (After connect)
+|           |-- TileLayout (Video tiles)
+|           |-- ChatTranscript (Chat history)
+|           +-- AgentControlBar
+|               |-- TrackToggle (Mic)
+|               |-- TrackToggle (Camera)
+|               |-- ChatInput
+|               +-- LeaveButton
+\end{verbatim}
+
+\subsection{State Management}
+
+Frontend sử dụng React Context và LiveKit hooks:
+
+\begin{itemize}
+    \item \textbf{SessionContext:} Quản lý connection state, app config
+    \item \textbf{useRoomContext:} Access LiveKit Room object
+    \item \textbf{useChat:} Manage chat messages
+    \item \textbf{useTranscriptions:} Real-time transcriptions
+    \item \textbf{useChatMessages:} Merge transcriptions + chat messages
+\end{itemize}
+
+\subsection{Connection Flow}
+
+\begin{enumerate}
+    \item User click ``Start Call''
+    \item Frontend gọi POST /api/connection-details
+    \item Server tạo LiveKit access token với:
+    \begin{itemize}
+        \item Room name: \texttt{voice\_assistant\_room\_\{random\}}
+        \item Participant identity: user identity
+        \item Grants: roomJoin, canPublish, canSubscribe
+    \end{itemize}
+    \item Frontend connect đến LiveKit server với token
+    \item AI Agent tự động join room khi có participant
+\end{enumerate}
+
+\subsection{Data Channel Communication}
+
+Để điều khiển UI từ AI Agent, sử dụng LiveKit Data Channel:
+
+\textbf{Agent gửi command:}
+\begin{verbatim}
+payload = {
+    "type": "control_camera" | "control_microphone" | "control_chat",
+    "status": "on" | "off"
+}
+await room.local_participant.publish_data(
+    json.dumps(payload),
+    destination_identities=[participant.identity]
+)
+\end{verbatim}
+
+\textbf{Frontend nhận và xử lý:}
+\begin{verbatim}
+room.on('dataReceived', (payload, participant) => {
+    const command = JSON.parse(payload);
+    if (command.type === 'control_camera') {
+        toggleCamera(command.status === 'on');
+    }
+    // ...
+});
+\end{verbatim}
+
+\section{Thiết kế giao diện}
+
+\subsection{Nguyên tắc thiết kế Voice-First UI}
+
+\begin{enumerate}
+    \item \textbf{Minimal Visual Elements:} Giao diện tối giản, không gây phân tán
+    \item \textbf{High Contrast:} Độ tương phản cao cho người low vision
+    \item \textbf{Large Touch Targets:} Nút bấm lớn, dễ tương tác
+    \item \textbf{Audio Feedback:} Mọi hành động đều có phản hồi âm thanh
+    \item \textbf{Screen Reader Compatible:} Tương thích hoàn toàn với VoiceOver/NVDA
+\end{enumerate}
+
+\subsection{Layout Design}
+
+\subsubsection{Welcome View}
+
+\begin{verbatim}
++-----------------------------------------+
+|                                         |
+|              [Logo BlindChat]           |
+|                                         |
+|        "BlindChat Voice Agent"          |
+|   "A voice agent support blind users"   |
+|                                         |
+|          +-----------------+            |
+|          |   Start Call    |            |
+|          +-----------------+            |
+|                                         |
+|            [Theme Toggle]               |
+|                                         |
++-----------------------------------------+
+\end{verbatim}
+
+\subsubsection{Session View}
+
+\begin{verbatim}
++-----------------------------------------+
+|  +---------------------------------+    |
+|  |                                 |    |
+|  |      Video Tile (Agent/User)    |    |
+|  |                                 |    |
+|  +---------------------------------+    |
+|                                         |
+|  +---------------------------------+    |
+|  | Chat Transcript                 |    |
+|  | User: "Read my PDF"             |    |
+|  | Agent: "Reading file..."        |    |
+|  +---------------------------------+    |
+|                                         |
+|  +---------------------------------+    |
+|  | [Mic] [Camera] [Chat] [Leave]   |    |
+|  | [          Text Input         ] |    |
+|  +---------------------------------+    |
++-----------------------------------------+
+\end{verbatim}
+
+\subsection{Accessibility Features}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|p{4cm}|p{10cm}|}
+        \hline
+        \textbf{Feature} & \textbf{Implementation} \\
+        \hline
+        Keyboard Navigation & Tất cả elements có thể focus bằng Tab \\
+        \hline
+        ARIA Labels & Mọi button và control đều có aria-label \\
+        \hline
+        Screen Reader & Semantic HTML, role attributes \\
+        \hline
+        Color Contrast & Tối thiểu 4.5:1 ratio \\
+        \hline
+        Focus Indicators & Visible focus ring cho keyboard users \\
+        \hline
+        Responsive Text & Hỗ trợ zoom đến 200\% \\
+        \hline
+        Dark Mode & Giảm strain cho người low vision \\
+        \hline
+    \end{tabular}
+    \caption{Accessibility Features}
+\end{table}
+
+\section{Sequence Diagrams}
+
+\subsection{Đọc file PDF}
+
+\begin{verbatim}
+User          Frontend      LiveKit      AI Agent       Backend
+ |               |             |            |              |
+ |--"Read PDF"-->|             |            |              |
+ |               |--Audio----->|            |              |
+ |               |             |--Stream--->|              |
+ |               |             |            |--STT         |
+ |               |             |            |--GPT-4o------|
+ |               |             |            |  (tool call) |
+ |               |             |            |--Read file   |
+ |               |             |            |--Summarize   |
+ |               |             |            |--TTS         |
+ |               |             |<--Stream---|              |
+ |               |<--Audio-----|            |              |
+ |<--Response----|             |            |              |
+\end{verbatim}
+
+\subsection{Mô tả camera}
+
+\begin{verbatim}
+User          Frontend      LiveKit      AI Agent      OpenAI Vision
+ |               |             |            |              |
+ |--"What see?"->|             |            |              |
+ |               |--Audio+Video>|           |              |
+ |               |             |--Stream--->|              |
+ |               |             |            |--Capture frame
+ |               |             |            |--Base64 encode
+ |               |             |            |------------->|
+ |               |             |            |<--Description|
+ |               |             |            |--TTS         |
+ |               |             |<--Stream---|              |
+ |<--Description-|             |            |              |
+\end{verbatim}
+
+\section{Kết luận chương}
+
+Chương này đã trình bày chi tiết thiết kế hệ thống BlindChat bao gồm:
+
+\begin{itemize}
+    \item Kiến trúc tổng thể với 3 thành phần: Frontend, Backend, AI Agent
+    \item Thiết kế AI Agent với 4 function tools
+    \item Thiết kế Backend API với authentication và message storage
+    \item Thiết kế Frontend với component architecture và state management
+    \item Thiết kế giao diện tuân thủ accessibility guidelines
+    \item Sequence diagrams cho các use case chính
+\end{itemize}
+
+Thiết kế này đảm bảo hệ thống có thể mở rộng, bảo trì dễ dàng và đáp ứng các yêu cầu accessibility cho người khiếm thị.

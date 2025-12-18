@@ -1,0 +1,315 @@
+% =========================================
+% CHƯƠNG 2: NGHIÊN CỨU NGƯỜI DÙNG
+% =========================================
+\chapter{NGHIÊN CỨU NGƯỜI DÙNG}
+
+Trong quá trình phát triển ứng dụng BlindChat, nhóm đã thực hiện nghiên cứu người dùng (User Research) để hiểu rõ nhu cầu, hành vi và những khó khăn mà người khiếm thị gặp phải khi sử dụng công nghệ. Chương này trình bày các phương pháp nghiên cứu, kết quả phân tích và các artifacts UX được xây dựng.
+
+\section{Phương pháp nghiên cứu}
+
+\subsection{Nghiên cứu thứ cấp (Secondary Research)}
+
+Nhóm đã thu thập và phân tích thông tin từ các nguồn sau:
+
+\begin{itemize}
+    \item Báo cáo của WHO về tình trạng thị lực toàn cầu
+    \item Nghiên cứu về accessibility và assistive technology
+    \item Hướng dẫn WCAG 2.1 (Web Content Accessibility Guidelines)
+    \item Tài liệu về thiết kế giao diện cho người khiếm thị
+    \item Case study từ các sản phẩm: Be My Eyes, Seeing AI, VoiceOver
+\end{itemize}
+
+\subsection{Nghiên cứu sơ cấp (Primary Research)}
+
+\begin{itemize}
+    \item \textbf{Quan sát gián tiếp:} Xem các video về cách người khiếm thị sử dụng công nghệ trên YouTube
+    \item \textbf{Phân tích đánh giá ứng dụng:} Đọc reviews của người dùng khiếm thị trên App Store và Google Play về các ứng dụng hỗ trợ
+    \item \textbf{Tham gia cộng đồng:} Theo dõi các diễn đàn và nhóm Facebook của cộng đồng người khiếm thị Việt Nam
+\end{itemize}
+
+\section{Phân tích đối tượng người dùng}
+
+\subsection{Đặc điểm chung của người khiếm thị}
+
+Dựa trên nghiên cứu, nhóm xác định các đặc điểm quan trọng của đối tượng người dùng:
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|p{4cm}|p{10cm}|}
+        \hline
+        \textbf{Đặc điểm} & \textbf{Mô tả} \\
+        \hline
+        Mức độ khiếm thị & Từ mù hoàn toàn đến thị lực kém (low vision) \\
+        \hline
+        Độ tuổi & Đa dạng, từ sinh viên đến người cao tuổi \\
+        \hline
+        Trình độ công nghệ & Từ cơ bản đến nâng cao, đã quen với screen reader \\
+        \hline
+        Thiết bị sử dụng & Smartphone, laptop, máy tính để bàn \\
+        \hline
+        Nhu cầu chính & Đọc tài liệu, giao tiếp, học tập, làm việc \\
+        \hline
+        Rào cản & Giao diện phức tạp, thiếu hỗ trợ giọng nói tiếng Việt \\
+        \hline
+    \end{tabular}
+    \caption{Đặc điểm đối tượng người dùng}
+\end{table}
+
+\subsection{Phân khúc người dùng (User Segments)}
+
+\begin{enumerate}
+    \item \textbf{Sinh viên khiếm thị:} Cần đọc giáo trình, tài liệu PDF, làm bài tập
+    \item \textbf{Nhân viên văn phòng:} Cần xử lý email, tài liệu công việc, họp trực tuyến
+    \item \textbf{Người cao tuổi mất thị lực:} Cần giao tiếp, đọc tin tức, sử dụng dịch vụ số
+    \item \textbf{Người khiếm thị bẩm sinh:} Đã quen với công nghệ hỗ trợ, cần giải pháp hiệu quả hơn
+\end{enumerate}
+
+\section{User Persona}
+
+Dựa trên kết quả nghiên cứu, nhóm xây dựng 2 User Persona đại diện:
+
+\subsection{Persona 1: Minh - Sinh viên đại học}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|p{4cm}|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{PERSONA: MINH}} \\
+        \hline
+        \textbf{Thông tin cơ bản} & Nam, 21 tuổi, sinh viên năm 3 ngành CNTT \\
+        \hline
+        \textbf{Tình trạng thị lực} & Mù hoàn toàn từ nhỏ \\
+        \hline
+        \textbf{Thiết bị} & MacBook Pro với VoiceOver, iPhone \\
+        \hline
+        \textbf{Kỹ năng công nghệ} & Cao, thành thạo screen reader và phím tắt \\
+        \hline
+        \textbf{Mục tiêu} & 
+        \begin{itemize}
+            \item Đọc giáo trình PDF nhanh chóng
+            \item Làm bài tập lập trình độc lập
+            \item Tham gia họp nhóm online hiệu quả
+        \end{itemize} \\
+        \hline
+        \textbf{Pain Points} & 
+        \begin{itemize}
+            \item Tài liệu PDF scan không đọc được bằng screen reader
+            \item Không thể xem biểu đồ, hình ảnh trong bài giảng
+            \item Mất nhiều thời gian để navigate trong tài liệu dài
+        \end{itemize} \\
+        \hline
+        \textbf{Quote} & ``Tôi muốn có một trợ lý AI hiểu được tôi đang cần gì và giúp tôi nhanh chóng, không cần phải nhớ hàng trăm phím tắt.'' \\
+        \hline
+    \end{tabular}
+    \caption{User Persona - Minh}
+\end{table}
+
+\subsection{Persona 2: Lan - Nhân viên văn phòng}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|p{4cm}|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{PERSONA: LAN}} \\
+        \hline
+        \textbf{Thông tin cơ bản} & Nữ, 35 tuổi, nhân viên kế toán \\
+        \hline
+        \textbf{Tình trạng thị lực} & Thị lực kém (low vision) do bệnh tiểu đường \\
+        \hline
+        \textbf{Thiết bị} & Laptop Windows với NVDA, smartphone Android \\
+        \hline
+        \textbf{Kỹ năng công nghệ} & Trung bình, đang học sử dụng screen reader \\
+        \hline
+        \textbf{Mục tiêu} & 
+        \begin{itemize}
+            \item Xử lý hóa đơn và báo cáo PDF
+            \item Giao tiếp với đồng nghiệp qua email
+            \item Duy trì công việc độc lập
+        \end{itemize} \\
+        \hline
+        \textbf{Pain Points} & 
+        \begin{itemize}
+            \item Khó nhớ các phím tắt của NVDA
+            \item Không thể đọc số liệu trên hóa đơn scan
+            \item Cảm thấy ngại khi phải nhờ đồng nghiệp giúp đỡ
+        \end{itemize} \\
+        \hline
+        \textbf{Quote} & ``Tôi muốn một công cụ đơn giản, chỉ cần nói là được, không cần phải học nhiều thứ phức tạp.'' \\
+        \hline
+    \end{tabular}
+    \caption{User Persona - Lan}
+\end{table}
+
+\section{User Journey Map}
+
+\subsection{Journey Map: Đọc tài liệu PDF}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.2}
+    \small
+    \begin{tabular}{|p{2.5cm}|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+        \hline
+        \textbf{Giai đoạn} & \textbf{1. Khởi động} & \textbf{2. Kết nối} & \textbf{3. Yêu cầu} & \textbf{4. Nhận kết quả} \\
+        \hline
+        \textbf{Hành động} & Mở ứng dụng BlindChat & Bấm ``Start Call'' & Nói: ``Đọc file PDF mới nhất'' & Nghe AI đọc nội dung \\
+        \hline
+        \textbf{Suy nghĩ} & ``Hy vọng nó hoạt động tốt'' & ``Chờ kết nối...'' & ``Không biết nó hiểu không'' & ``Tuyệt vời, đúng file tôi cần'' \\
+        \hline
+        \textbf{Cảm xúc} & Tò mò & Hồi hộp & Kỳ vọng & Hài lòng \\
+        \hline
+        \textbf{Pain Points} & Không biết UI hiện gì & Không biết đã kết nối chưa & Phải nói rõ ràng & File dài, cần tóm tắt \\
+        \hline
+        \textbf{Cơ hội} & Audio feedback ngay & Thông báo bằng giọng & Xác nhận lại yêu cầu & Tùy chọn tóm tắt/đọc chi tiết \\
+        \hline
+    \end{tabular}
+    \caption{User Journey Map - Đọc tài liệu PDF}
+\end{table}
+
+\subsection{Journey Map: Mô tả hình ảnh từ camera}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.2}
+    \small
+    \begin{tabular}{|p{2.5cm}|p{3cm}|p{3cm}|p{3cm}|p{3cm}|}
+        \hline
+        \textbf{Giai đoạn} & \textbf{1. Bật camera} & \textbf{2. Hướng camera} & \textbf{3. Hỏi AI} & \textbf{4. Nhận mô tả} \\
+        \hline
+        \textbf{Hành động} & Nói: ``Bật camera'' & Di chuyển thiết bị & Nói: ``Mô tả những gì bạn thấy'' & Nghe mô tả chi tiết \\
+        \hline
+        \textbf{Suy nghĩ} & ``Camera đã bật chưa?'' & ``Không biết hướng có đúng không'' & ``Nó có thấy rõ không?'' & ``À, vậy đây là...'' \\
+        \hline
+        \textbf{Cảm xúc} & Lo lắng & Bất an & Hồi hộp & Vui mừng \\
+        \hline
+        \textbf{Pain Points} & Không biết camera có hoạt động & Không có feedback về góc nhìn & Chờ đợi & Mô tả có thể không đủ chi tiết \\
+        \hline
+        \textbf{Cơ hội} & Xác nhận bằng âm thanh & Hướng dẫn bằng giọng & Phản hồi nhanh & Cho phép hỏi thêm \\
+        \hline
+    \end{tabular}
+    \caption{User Journey Map - Mô tả hình ảnh}
+\end{table}
+
+\section{Yêu cầu hệ thống (Requirements)}
+
+Dựa trên kết quả nghiên cứu người dùng, nhóm xác định các yêu cầu hệ thống như sau:
+
+\subsection{Yêu cầu chức năng (Functional Requirements)}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|p{10cm}|c|}
+        \hline
+        \textbf{ID} & \textbf{Mô tả} & \textbf{Độ ưu tiên} \\
+        \hline
+        FR01 & Người dùng có thể tương tác hoàn toàn bằng giọng nói & Cao \\
+        \hline
+        FR02 & Hệ thống có thể đọc và tóm tắt file PDF & Cao \\
+        \hline
+        FR03 & Hệ thống có thể mô tả hình ảnh từ camera & Cao \\
+        \hline
+        FR04 & Người dùng có thể điều khiển UI bằng giọng nói (bật/tắt camera, mic) & Trung bình \\
+        \hline
+        FR05 & Hệ thống lưu trữ lịch sử hội thoại để duy trì context & Trung bình \\
+        \hline
+        FR06 & Người dùng có thể xem transcript của hội thoại & Thấp \\
+        \hline
+        FR07 & Hệ thống hỗ trợ screen sharing & Thấp \\
+        \hline
+    \end{tabular}
+    \caption{Yêu cầu chức năng}
+\end{table}
+
+\subsection{Yêu cầu phi chức năng (Non-Functional Requirements)}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{|c|p{10cm}|c|}
+        \hline
+        \textbf{ID} & \textbf{Mô tả} & \textbf{Độ ưu tiên} \\
+        \hline
+        NFR01 & Thời gian phản hồi của AI < 3 giây & Cao \\
+        \hline
+        NFR02 & Giao diện phải tuân thủ WCAG 2.1 Level AA & Cao \\
+        \hline
+        NFR03 & Hệ thống phải cung cấp audio feedback cho mọi hành động & Cao \\
+        \hline
+        NFR04 & Hỗ trợ các trình duyệt phổ biến (Chrome, Firefox, Edge) & Trung bình \\
+        \hline
+        NFR05 & Bảo mật dữ liệu người dùng với JWT authentication & Trung bình \\
+        \hline
+        NFR06 & Hệ thống hoạt động ổn định với 100 người dùng đồng thời & Thấp \\
+        \hline
+    \end{tabular}
+    \caption{Yêu cầu phi chức năng}
+\end{table}
+
+\section{Nguyên tắc thiết kế Accessibility}
+
+Dựa trên nghiên cứu người dùng và các tiêu chuẩn accessibility, nhóm áp dụng các nguyên tắc thiết kế sau:
+
+\subsection{Nguyên tắc POUR (WCAG 2.1)}
+
+\begin{enumerate}
+    \item \textbf{Perceivable (Có thể nhận thức):}
+    \begin{itemize}
+        \item Mọi thông tin đều có thể được nhận thức qua thính giác
+        \item Cung cấp text alternative cho nội dung non-text
+        \item Hỗ trợ screen reader hoàn toàn
+    \end{itemize}
+    
+    \item \textbf{Operable (Có thể vận hành):}
+    \begin{itemize}
+        \item Điều khiển hoàn toàn bằng giọng nói
+        \item Hỗ trợ keyboard navigation
+        \item Không có giới hạn thời gian cho tương tác
+    \end{itemize}
+    
+    \item \textbf{Understandable (Có thể hiểu):}
+    \begin{itemize}
+        \item Ngôn ngữ đơn giản, rõ ràng
+        \item Phản hồi nhất quán và có thể dự đoán
+        \item Hướng dẫn sử dụng bằng giọng nói
+    \end{itemize}
+    
+    \item \textbf{Robust (Bền vững):}
+    \begin{itemize}
+        \item Tương thích với các công nghệ hỗ trợ
+        \item Semantic HTML đúng chuẩn
+        \item ARIA labels đầy đủ
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Nguyên tắc Voice-First Design}
+
+\begin{enumerate}
+    \item \textbf{Audio Feedback Liên tục:} Mọi hành động và trạng thái đều được thông báo bằng âm thanh
+    
+    \item \textbf{Confirmation trước Action quan trọng:} Xác nhận lại trước khi thực hiện các hành động quan trọng
+    
+    \item \textbf{Error Recovery dễ dàng:} Cho phép người dùng sửa lỗi bằng giọng nói đơn giản
+    
+    \item \textbf{Context Awareness:} AI nhớ ngữ cảnh để người dùng không phải lặp lại thông tin
+    
+    \item \textbf{Progressive Disclosure:} Cung cấp thông tin từ tổng quan đến chi tiết theo yêu cầu
+\end{enumerate}
+
+\section{Kết luận chương}
+
+Qua quá trình nghiên cứu người dùng, nhóm đã:
+
+\begin{itemize}
+    \item Hiểu rõ đặc điểm, nhu cầu và khó khăn của người khiếm thị khi sử dụng công nghệ
+    \item Xây dựng được 2 User Persona đại diện cho các phân khúc người dùng chính
+    \item Thiết lập User Journey Map cho các use case quan trọng
+    \item Xác định được các yêu cầu chức năng và phi chức năng của hệ thống
+    \item Đề xuất các nguyên tắc thiết kế accessibility phù hợp
+\end{itemize}
+
+Các kết quả nghiên cứu này sẽ là nền tảng để thiết kế và phát triển ứng dụng BlindChat trong các chương tiếp theo.
+

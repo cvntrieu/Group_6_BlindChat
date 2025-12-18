@@ -1,0 +1,272 @@
+\documentclass[a4paper,12pt]{report}
+% --- CẤU HÌNH TIẾNG VIỆT & FONT ---
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{mathptmx} % Font Times New Roman
+
+
+% --- CẤU HÌNH CĂN LỀ ---
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    left=30mm,
+    right=20mm,
+    top=25mm,
+    bottom=25mm
+}
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parskip}{6pt}
+
+% --- CÁC GÓI HỖ TRỢ ---
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{amssymb} % Cho checkmark symbol
+\usepackage{hyperref}
+\hypersetup{pdftitle={Báo cáo Tương tác Người Máy}, colorlinks=true, linkcolor=black, urlcolor=blue}
+\usepackage{titlesec}
+\usepackage{array} 
+\usepackage{tikz} % Để vẽ khung
+\usetikzlibrary{calc}
+
+% --- SỬA LỖI MÀU SẮC TẠI ĐÂY ---
+\usepackage{xcolor}
+% Định nghĩa trực tiếp màu Xanh Navy (RGB: 0, 0, 128) để tránh lỗi "Undefined color"
+\definecolor{navy}{RGB}{0,0,128} 
+
+% --- ĐỊNH DẠNG TIÊU ĐỀ CHƯƠNG ---
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\centering\fontsize{16}{19}\selectfont}
+  {\chaptertitlename\ \thechapter}
+  {10pt}
+  {\fontsize{18}{21}\selectfont}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+% =========================================
+% BẮT ĐẦU NỘI DUNG
+% =========================================
+\begin{document}
+
+% --- TRANG BÌA (ĐÃ FIX LỖI TRANG TRẮNG) ---
+\begin{titlepage}
+    \begin{tikzpicture}[remember picture, overlay]
+        \colorlet{FrameColor}{navy} 
+        \draw[FrameColor, line width = 3pt, double distance = 3pt, double = white] 
+            ($(current page.north west) + (2cm,-2cm)$) rectangle ($(current page.south east) + (-2cm,2cm)$);
+        
+        % Họa tiết 4 góc
+        \draw[FrameColor, line width=2pt] ($(current page.north west) + (2cm,-2cm)$) +(-2pt,8pt) -- +(8pt,8pt) -- +(8pt,-2pt);
+        \draw[FrameColor, line width=1.5pt] ($(current page.north west) + (2cm,-2cm)$) +(-2pt,3pt) -- +(3pt,3pt) -- +(3pt,-2pt);
+        
+        \draw[FrameColor, line width=2pt] ($(current page.north east) + (-2cm,-2cm)$) +(2pt,8pt) -- +(-8pt,8pt) -- +(-8pt,-2pt);
+        \draw[FrameColor, line width=1.5pt] ($(current page.north east) + (-2cm,-2cm)$) +(2pt,3pt) -- +(-3pt,3pt) -- +(-3pt,-2pt);
+        
+        \draw[FrameColor, line width=2pt] ($(current page.south west) + (2cm,2cm)$) +(-2pt,-8pt) -- +(8pt,-8pt) -- +(8pt,2pt);
+        \draw[FrameColor, line width=1.5pt] ($(current page.south west) + (2cm,2cm)$) +(-2pt,-3pt) -- +(3pt,-3pt) -- +(3pt,2pt);
+        
+        \draw[FrameColor, line width=2pt] ($(current page.south east) + (-2cm,2cm)$) +(2pt,-8pt) -- +(-8pt,-8pt) -- +(-8pt,2pt);
+        \draw[FrameColor, line width=1.5pt] ($(current page.south east) + (-2cm,2cm)$) +(2pt,-3pt) -- +(-3pt,-3pt) -- +(-3pt,2pt);
+    \end{tikzpicture}
+
+    \begin{center}
+        \vspace*{-0.5cm} % Kéo nội dung lên cao một chút
+        
+        {\fontsize{14}{16}\selectfont \textbf{TRƯỜNG ĐẠI HỌC CÔNG NGHỆ}} \\
+        \vspace{0.3cm}
+        {\fontsize{14}{16}\selectfont \textbf{KHOA CÔNG NGHỆ THÔNG TIN}} \\
+        
+        \vspace{0.2cm}
+        \rule{3cm}{0.5pt} 
+        
+        \vspace{1cm} 
+        \includegraphics[width=3.5cm]{logo-uet.png} 
+        \vspace{1cm} 
+        
+        {\fontsize{18}{24}\selectfont \textbf{BÁO CÁO BÀI TẬP LỚN CUỐI KÌ}} \\
+        \vspace{0.3cm}
+        {\fontsize{18}{24}\selectfont \textbf{BỘ MÔN}} \\
+        \vspace{0.3cm}
+        {\fontsize{18}{24}\selectfont \textbf{TƯƠNG TÁC NGƯỜI - MÁY}} \\ 
+        \vspace{0.3cm}
+        {\fontsize{18}{24}\selectfont \textbf{NĂM HỌC 2024 - 2025}} \\
+        
+        \vspace{1.2cm} 
+        
+        {\fontsize{16}{19}\selectfont \textbf{Nhóm 6}} 
+        
+        \vspace{0.8cm} 
+        
+        % Danh sách thành viên rút gọn ở bìa để đỡ tốn chỗ
+        \begin{tabular}{r l} 
+            \textbf{Giảng viên hướng dẫn:} & TS. Ngô Thị Duyên \\
+            \textbf{Môn học:} & Tương tác Người - Máy \\
+            \textbf{Lớp học phần:} & INT2041 2 \\
+            \textbf{Thành viên:} & Nguyễn Văn Hòa - 23021556 \\
+                                 & Cao Vũ Nhật Triều - 23021740 \\
+                                 & Nguyễn Duy Phong - 23021656 \\
+                                 & Hoàng Minh Quân - 22028019 \\
+                                 & Đặng Hoàng Minh Nghĩa - 22028054 \\
+                                 & Nguyễn Tuấn Dương - 22028230
+        \end{tabular}
+        
+        \vfill
+        \hfill 
+        \vspace*{0.5cm} % Giảm khoảng cách dưới cùng để tránh tràn trang
+    \end{center}
+\end{titlepage} 
+% LƯU Ý: Đã xóa lệnh \newpage ở đây vì không cần thiết
+
+% --- TRANG ĐÓNG GÓP (NỐI TIẾP NGAY SAU BÌA) ---
+% --- TRANG ĐÓNG GÓP (NỐI TIẾP NGAY SAU BÌA) ---
+\thispagestyle{empty} 
+\begin{center}
+    {\fontsize{16}{19}\selectfont \textbf{THÔNG TIN ĐÓNG GÓP THÀNH VIÊN}} \\
+    \vspace{1cm}
+\end{center}
+
+\begin{table}[h]
+    \centering
+    \renewcommand{\arraystretch}{1.5} 
+    \setlength{\tabcolsep}{5pt}
+    
+    \begin{tabular}{|p{5cm}|p{7.5cm}|c|}
+        \hline
+        \centering\textbf{MSV - Thành viên} & \centering\textbf{Nội dung thực hiện} & \textbf{Tỉ lệ} \\
+        \hline
+        \textbf{23021740} \newline Cao Vũ Nhật Triều & Phát triển Frontend, UI/UX, luồng dữ liệu \& tài khoản & 16.67\% \\
+        \hline
+        \textbf{23021656} \newline Nguyễn Duy Phong & Phát triển Frontend, UI/UX, luồng dữ liệu \& tài khoản & 16.67\% \\
+        \hline
+        \textbf{23021556} \newline Nguyễn Văn Hòa & Phát triển AI - Agent & 16.67\% \\
+        \hline
+        \textbf{22028230} \newline Nguyễn Tuấn Dương & Phát triển Backend, Database & 16.65\% \\
+        \hline
+        \textbf{22028054} \newline Đặng Hoàng Minh Nghĩa & Phát triển AI - Agent & 16.67\% \\
+        \hline
+        \textbf{22028219} \newline Hoàng Minh Quân & Phát triển AI - Agent & 16.67\% \\
+        \hline
+    \end{tabular}
+    
+    \vspace{0.3cm} % Khoảng cách giữa bảng và chú thích
+    % Chú thích bảng (Viết thủ công để đảm bảo hiển thị đúng "Bảng 1")
+    \textbf{Bảng 1: Phân chia công việc trong nhóm}
+\end{table}
+
+% Đoạn văn ngắn ngay dưới bảng
+\indent % Lệnh này để không thụt đầu dòng, giúp văn bản thẳng hàng đẹp
+Các thành viên trong nhóm đều tham gia xây dựng ý tưởng và đã cùng nhau phối hợp để giải quyết những vấn đề phát sinh trong quá trình triển khai, đảm bảo tiến độ và chất lượng của dự án.
+
+\newpage
+
+% --- LỜI CAM ĐOAN ---
+\thispagestyle{empty}
+\begin{center}
+    {\fontsize{16}{19}\selectfont \textbf{LỜI CAM ĐOAN}}
+    \vspace{1cm}
+\end{center}
+
+Chúng em xin cam đoan đây là công trình nghiên cứu của nhóm chúng em thực hiện, dưới sự hướng dẫn của Cán bộ hướng dẫn: TS. Ngô Thị Duyên.
+
+Chúng em xin cam đoan: Nội dung trình bày trong báo cáo bài tập lớn môn học này là trung thực và không sao chép bất kỳ tài liệu hay công trình nghiên cứu nào khác mà không trích dẫn nguồn gốc rõ ràng theo quy định.
+
+Các thông tin, hình ảnh, mã nguồn (nếu có) được trình bày là kết quả tự thân của nhóm trong quá trình thực hiện dự án \textbf{XÂY DỰNG ỨNG DỤNG HỖ TRỢ NGƯỜI KHIẾM THỊ BLINDCHAT}.
+
+\vspace{2cm}
+\begin{flushright}
+    \textbf{Nhóm sinh viên thực hiện}\\
+    \vspace{1cm}
+    Nhóm 6
+\end{flushright}
+
+\newpage
+
+% --- TÓM TẮT DỰ ÁN ---
+\thispagestyle{empty}
+\begin{center}
+    {\fontsize{16}{19}\selectfont \textbf{TÓM TẮT DỰ ÁN}}
+    \vspace{1cm}
+\end{center}
+
+Dự án \textbf{BlindChat} được thiết kế nhằm mục tiêu xây dựng một ứng dụng web hỗ trợ người khiếm thị thông qua giao diện giọng nói AI. Ứng dụng cho phép người dùng tương tác với trợ lý ảo bằng giọng nói để thực hiện các tác vụ hàng ngày như đọc và tóm tắt tài liệu PDF, mô tả hình ảnh từ camera, và điều khiển giao diện bằng lệnh thoại.
+
+Về mặt kỹ thuật, ứng dụng được xây dựng theo kiến trúc fullstack hiện đại gồm 3 thành phần chính:
+
+\begin{itemize}
+    \item \textbf{Frontend:} Được phát triển bằng Next.js 15 kết hợp với React 19 và LiveKit Client SDK để xử lý giao tiếp real-time giọng nói và video. Giao diện hỗ trợ chat transcript, video streaming, screen sharing và dark/light theme.
+    
+    \item \textbf{Backend:} Sử dụng ASP.NET Core 9 với Entity Framework Core và SQL Server để quản lý người dùng, lưu trữ lịch sử hội thoại và xác thực JWT Token.
+    
+    \item \textbf{AI Agent:} Được xây dựng bằng Python với LiveKit Agents SDK, tích hợp OpenAI GPT-4o-mini cho xử lý ngôn ngữ tự nhiên, Azure Speech Services cho Speech-to-Text và Text-to-Speech, cùng khả năng xử lý hình ảnh từ camera qua OpenAI Vision API.
+\end{itemize}
+
+Hệ thống cung cấp 4 công cụ chính cho người dùng: (1) Đọc và tóm tắt file PDF từ thư mục Downloads; (2) Mô tả hình ảnh từ camera; (3) Điều khiển UI bằng giọng nói (camera, microphone, chat panel); (4) Truy vấn ngày giờ hiện tại. Lịch sử hội thoại được lưu trữ và đồng bộ với backend để duy trì context liên tục giữa các phiên làm việc.
+
+Dự án hướng tới việc cải thiện khả năng tiếp cận công nghệ (accessibility) cho người khiếm thị, giúp họ tương tác với máy tính và các tài liệu số một cách độc lập và hiệu quả thông qua giao diện giọng nói thân thiện.
+
+\newpage
+
+% --- MỤC LỤC ---
+\tableofcontents
+\newpage
+
+% --- NỘI DUNG CHÍNH ---
+\input{chuong1} % Mở đầu và Đặt vấn đề
+\input{chuong2} % Nghiên cứu người dùng (User Research)
+\input{chuong3} % Cơ sở lý thuyết và Công nghệ
+\input{chuong4} % Thiết kế hệ thống
+\input{chuong5} % Triển khai và Kết quả
+\input{chuong6} % Kết luận và Hướng phát triển
+
+% --- TÀI LIỆU THAM KHẢO ---
+\newpage
+\addcontentsline{toc}{chapter}{TÀI LIỆU THAM KHẢO}
+\begin{center}
+    {\fontsize{16}{19}\selectfont \textbf{TÀI LIỆU THAM KHẢO}}
+    \vspace{1cm}
+\end{center}
+
+\textbf{Tài liệu về HCI và Accessibility:}
+\begin{enumerate}
+    \item Nielsen, J. (1994). \textit{10 Usability Heuristics for User Interface Design}. Nielsen Norman Group.
+    
+    \item W3C. (2018). \textit{Web Content Accessibility Guidelines (WCAG) 2.1}. World Wide Web Consortium. URL: \url{https://www.w3.org/WAI/WCAG21/}
+    
+    \item W3C. (2017). \textit{WAI-ARIA Authoring Practices 1.1}. World Wide Web Consortium. URL: \url{https://www.w3.org/WAI/ARIA/apg/}
+    
+    \item World Health Organization. (2019). \textit{World Report on Vision}. WHO.
+\end{enumerate}
+
+\textbf{Tài liệu về Công nghệ AI:}
+\begin{enumerate}
+    \setcounter{enumi}{4}
+    \item Vaswani, A. et al. (2017). \textit{Attention Is All You Need}. NeurIPS.
+    
+    \item OpenAI. (2024). \textit{GPT-4 Technical Report}. URL: \url{https://openai.com/research/gpt-4}
+    
+    \item Microsoft Azure. (2024). \textit{Azure Speech Services Documentation}. URL: \url{https://docs.microsoft.com/azure/cognitive-services/speech-service/}
+\end{enumerate}
+
+\textbf{Tài liệu về Công nghệ Web:}
+\begin{enumerate}
+    \setcounter{enumi}{7}
+    \item LiveKit. (2024). \textit{LiveKit Documentation}. URL: \url{https://docs.livekit.io/}
+    
+    \item Next.js. (2024). \textit{Next.js Documentation}. Vercel. URL: \url{https://nextjs.org/docs}
+    
+    \item Microsoft. (2024). \textit{ASP.NET Core Documentation}. URL: \url{https://docs.microsoft.com/aspnet/core/}
+\end{enumerate}
+
+\textbf{Tài liệu về Accessibility Technologies:}
+\begin{enumerate}
+    \setcounter{enumi}{10}
+    \item NV Access. (2024). \textit{NVDA User Guide}. URL: \url{https://www.nvaccess.org/}
+    
+    \item Apple. (2024). \textit{VoiceOver User Guide}. URL: \url{https://support.apple.com/guide/voiceover/}
+    
+    \item Be My Eyes. (2024). \textit{Be My AI}. URL: \url{https://www.bemyeyes.com/}
+    
+    \item Microsoft. (2024). \textit{Seeing AI}. URL: \url{https://www.microsoft.com/en-us/seeing-ai}
+\end{enumerate}
+
+\end{document}
